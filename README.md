@@ -1,4 +1,4 @@
-# Docker apps for cyberbits.org
+# Container apps for any Docker host - setup with OpenTofu
 
 Docker container orchestration with OpenTofu. Cloud agnostic: works on any Docker host.
 
