@@ -1,0 +1,225 @@
+# =============================================================================
+# terraform.tfvars.example — User Configuration Reference
+# =============================================================================
+#
+# Copy this file to terraform.tfvars and fill in the required values.
+# Lines starting with # are comments. Commented-out variables show their
+# default values — uncomment and change only what you need to override.
+#
+# HOW TO ADD A NEW SITE
+#   Append a new object to the relevant list below and run:
+#     tofu plan   # preview changes
+#     tofu apply  # deploy
+#
+# DNS REQUIREMENT
+#   Every domain must have a valid A record pointing to this server BEFORE
+#   running apply. Let's Encrypt validates DNS, and repeated failures will
+#   trigger a temporary ban on certificate issuance.
+#
+# SENSITIVE VALUES
+#   Keep terraform.tfvars out of version control (.gitignore it).
+#
+# =============================================================================
+
+# =============================================================================
+# CONNECTION
+# =============================================================================
+
+# Docker provider connection string.
+# For SSH remote deployment (recommended for servers):
+#   docker_host = "ssh://user@your-server.example.com"
+# For local Docker socket:
+#   docker_host = "unix:///var/run/docker.sock"
+docker_host = "ssh://deployacc@your-server.example.com"
+
+# SSH connection string used by provisioners to upload config files.
+# Must reference the same server as docker_host.
+# Format: "user@host"  — leave empty ("") for local deployments.
+remote_host = "deployacc@your-server.example.com"
+
+# =============================================================================
+# GLOBAL SETTINGS
+# =============================================================================
+
+# Email address for Let's Encrypt certificate notifications.
+admin_email = "you@example.com"
+
+# Root directory on the server for all application data.
+# Each app gets its own subdirectory: /opt/nginx-apps/<name>, etc.
+base_app_dir = "/opt"
+
+# Docker restart policy applied to all containers.
+# restart_policy = "unless-stopped"
+
+# Docker security options applied to all containers.
+# security_opts = ["no-new-privileges:true"]
+
+# =============================================================================
+# TRAEFIK GATEWAY
+# =============================================================================
+
+# Traefik Docker image tag — update here to upgrade.
+traefik_version = "v3.6"
+
+# Internal Docker network name shared between Traefik and all app containers.
+# traefik_network = "traefik"
+
+# Directory on the server that holds traefik.yml and config/dynamic.yml.
+# traefik_config_dir = "/opt/traefik"
+
+# Docker container name for the Traefik gateway.
+# traefik_container_name = "gw-traefik"
+
+# Docker volume name for Let's Encrypt certificate storage.
+# traefik_ssl_volume_name = "gw-traefik-ssl"
+
+# Enable the Traefik dashboard — disable in production.
+# traefik_dashboard_enabled = false
+
+# =============================================================================
+# TRAEFIK ROUTING
+# =============================================================================
+# These settings are applied as Docker labels to every app container.
+# Override only if your traefik.yml uses different entrypoint/resolver names
+# or a different middleware chain.
+
+# traefik_router = {
+#   enabled       = "true"
+#   tls           = "true"
+#   entrypoint    = "websecure"
+#   cert_resolver = "letsencrypt"
+#   middlewares   = "security-headers@file,rate-limit@file,compress@file"
+# }
+
+# =============================================================================
+# NGINX STATIC SITES
+# =============================================================================
+# Add a new site by appending an object to this list.
+#
+# REQUIRED per site : name, domain
+# OPTIONAL per site :
+#   title             — page <title> (defaults to domain)
+#   message           — body text on the default page
+#   www_redirect      — route www.domain here too  (default: false)
+#   custom_nginx_conf — use /opt/nginx-apps/<name>/nginx.conf  (default: false)
+#   memory_limit      — container memory limit in MiB            (default: 64)
+#   cpu_shares        — container CPU shares                      (default: 512)
+
+nginx_apps = [
+  {
+    name    = "mysite"
+    domain  = "mysite.example.com"
+    title   = "My Site"
+    message = "Coming soon."
+    # www_redirect      = false
+    # custom_nginx_conf = false
+    # memory_limit      = 64
+    # cpu_shares        = 512
+  },
+]
+
+# Docker image used for all Nginx static sites.
+# nginx_image = "nginx:alpine"
+
+# Prefix for Nginx container and volume names (e.g. nx → nx-mysite).
+# nginx_name_prefix = "nx"
+
+# =============================================================================
+# WORDPRESS SITES
+# =============================================================================
+# Add a new site by appending an object to this list.
+#
+# REQUIRED per site : name, domain
+# OPTIONAL per site :
+#   db_name                 (defaults to <name>_wp)
+#   db_user                 (defaults to <name>_wp)
+#   table_prefix            (default: "wp_")
+#   www_redirect            (default: false)
+#   php_memory_limit        (default: "512M")
+#   php_upload_max_filesize (default: "64M")
+#   php_post_max_size       (default: "64M")
+#   php_max_execution_time  (default: 300)
+#   redis_maxmemory         (default: "128mb")
+#   redis_maxmemory_policy  (default: "allkeys-lru")
+#   app_memory_limit        (default: 512)   — PHP-FPM container, MiB
+#   app_cpu_shares          (default: 1024)  — PHP-FPM container CPU shares
+#   nginx_memory_limit      (default: 128)   — Nginx sidecar, MiB
+#   nginx_cpu_shares        (default: 256)   — Nginx sidecar CPU shares
+#   db_memory_limit         (default: 512)   — MariaDB container, MiB
+#   db_cpu_shares           (default: 512)   — MariaDB container CPU shares
+#   redis_memory_limit      (default: 256)   — Redis container, MiB
+#   redis_cpu_shares        (default: 256)   — Redis container CPU shares
+#   wpcli_memory_limit      (default: 128)   — WP-CLI sidecar, MiB
+#   wpcli_cpu_shares        (default: 256)   — WP-CLI sidecar CPU shares
+
+wordpress_apps = [
+  {
+    name   = "myblog"
+    domain = "myblog.example.com"
+    # db_name  = "myblog_wp"
+    # db_user  = "myblog_wp"
+    # www_redirect     = false
+    # php_memory_limit = "512M"
+    # app_memory_limit = 512
+    # db_memory_limit  = 512
+  },
+]
+
+# WordPress stack Docker images — override to pin specific versions.
+# wordpress_images = {
+#   wordpress = "wordpress:6-fpm-alpine"
+#   db        = "mariadb:10.11"
+#   redis     = "redis:7-alpine"
+#   nginx     = "nginx:alpine"
+#   cli       = "wordpress:cli"
+# }
+
+# Prefix for WordPress container, volume, and network names.
+# wordpress_name_prefix = "wp"
+
+# =============================================================================
+# NEXTCLOUD INSTANCES
+# =============================================================================
+# Add a new instance by appending an object to this list.
+#
+# REQUIRED per instance : name, domain
+# OPTIONAL per instance :
+#   admin_user             (default: "admin")
+#   www_redirect           (default: false)
+#   php_memory_limit       (default: "1024M")
+#   max_upload_size        (default: "2G")
+#   redis_maxmemory        (default: "256mb")
+#   redis_maxmemory_policy (default: "allkeys-lru")
+#   app_memory_limit       (default: 1024)  — Nextcloud container, MiB
+#   app_cpu_shares         (default: 1024)  — Nextcloud container CPU shares
+#   cron_memory_limit      (default: 256)   — Cron container, MiB
+#   cron_cpu_shares        (default: 256)   — Cron container CPU shares
+#   db_memory_limit        (default: 512)   — PostgreSQL container, MiB
+#   db_cpu_shares          (default: 512)   — PostgreSQL container CPU shares
+#   redis_memory_limit     (default: 512)   — Redis container, MiB
+#   redis_cpu_shares       (default: 256)   — Redis container CPU shares
+
+nextcloud_apps = [
+  {
+    name       = "mycloud"
+    domain     = "mycloud.example.com"
+    admin_user = "yourusername"
+    # php_memory_limit = "1024M"
+    # max_upload_size  = "2G"
+    # app_memory_limit = 1024
+    # db_memory_limit  = 512
+  },
+]
+
+# Nextcloud stack Docker images — override to pin specific versions.
+# nextcloud_images = {
+#   nextcloud = "nextcloud:28-apache"
+#   db        = "postgres:15-alpine"
+#   redis     = "redis:7-alpine"
+# }
+
+# Prefix for Nextcloud container, volume, and network names.
+# nextcloud_name_prefix = "nc"
+
+# CIDR of your reverse proxy (Traefik) Docker network — passed as TRUSTED_PROXIES.
+# nextcloud_trusted_proxies = "172.16.0.0/12"
