@@ -30,9 +30,10 @@ output "get_nextcloud_credentials" {
     NEXTCLOUD CREDENTIALS
     =====================
 
-    Credentials are sensitive of course. Retrieve the Nextcloud credentials after first run with:
+    Retrieve the Nextcloud credentials after first run with:
 
     tofu output -json nextcloud_credentials | jq
+
   EOT
 
 }
