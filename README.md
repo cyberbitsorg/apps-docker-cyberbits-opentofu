@@ -35,11 +35,6 @@ Generated credentials are stored in two places:
 
 The state file is sensitive, treat it like a password store.
 
-```bash
-# Read credentials directly from the server
-ssh deployacc@server cat /opt/wordpress-apps/firstwp/.env
-```
-
 For production, use remote state with encryption (e.g., S3 with server-side encryption or OpenTofu Cloud).
 
 ### Adding a new app
