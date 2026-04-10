@@ -219,7 +219,7 @@ variable "wordpress_image" {
 variable "wordpress_db_image" {
   description = "MariaDB Docker image for WordPress"
   type        = string
-  default     = "mariadb:10.11"
+  default     = "mariadb:11"
 }
 
 variable "wordpress_redis_image" {

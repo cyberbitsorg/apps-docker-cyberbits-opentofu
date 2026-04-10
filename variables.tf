@@ -223,7 +223,7 @@ variable "wordpress_images" {
   description = "Docker images for the WordPress stack. Override individual keys to pin versions."
   type = object({
     wordpress = optional(string, "wordpress:6-fpm-alpine")
-    db        = optional(string, "mariadb:10.11")
+    db        = optional(string, "mariadb:11")
     redis     = optional(string, "redis:7-alpine")
     nginx     = optional(string, "nginx:alpine")
     cli       = optional(string, "wordpress:cli")

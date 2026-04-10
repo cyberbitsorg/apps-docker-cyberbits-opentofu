@@ -168,7 +168,7 @@ wordpress_apps = [
 # WordPress stack Docker images — override to pin specific versions.
 # wordpress_images = {
 #   wordpress = "wordpress:6-fpm-alpine"
-#   db        = "mariadb:10.11"
+#   db        = "mariadb:11"
 #   redis     = "redis:7-alpine"
 #   nginx     = "nginx:alpine"
 #   cli       = "wordpress:cli"

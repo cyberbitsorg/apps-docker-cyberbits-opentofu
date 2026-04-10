@@ -36,7 +36,7 @@ locals {
     "--max-connections=${var.db_max_connections}"
   ]
 
-  redis_command        = ["redis-server", "--maxmemory", var.redis_maxmemory, "--maxmemory-policy", var.redis_maxmemory_policy, "--requirepass", local.redis_password]
+  redis_command          = ["redis-server", "--maxmemory", var.redis_maxmemory, "--maxmemory-policy", var.redis_maxmemory_policy, "--requirepass", local.redis_password]
   redis_healthcheck_test = ["CMD", "redis-cli", "-a", local.redis_password, "ping"]
 
   # Computed bind mount source paths
@@ -44,7 +44,7 @@ locals {
   nginx_conf_source = "${local.app_dir}/nginx/wordpress.conf"
 
   # Shared Redis defines (used by both WordPress app and WP-CLI)
-  redis_config_defines = "define('WP_REDIS_HOST', '${var.redis_host}'); define('WP_REDIS_PORT', ${var.redis_port}); define('WP_REDIS_DATABASE', ${var.redis_db}); define('WP_REDIS_AUTH', '${local.redis_password}'); define('WP_CACHE', ${var.wp_cache});"
+  redis_config_defines = "define('WP_REDIS_HOST', '${var.redis_host}'); define('WP_REDIS_PORT', ${var.redis_port}); define('WP_REDIS_DATABASE', ${var.redis_db}); define('WP_REDIS_PASSWORD', '${local.redis_password}'); define('WP_CACHE', ${var.wp_cache});"
 
   # WordPress config extras
   wordpress_config_extra = "define('DISALLOW_FILE_EDIT', ${var.wp_disallow_file_edit}); define('FORCE_SSL_ADMIN', ${var.wp_force_ssl_admin}); define('WP_AUTO_UPDATE_CORE', '${var.wp_auto_update_core}'); define('WP_MEMORY_LIMIT', '${var.php_memory_limit}'); ${local.redis_config_defines}"
