@@ -8,7 +8,7 @@
 
 resource "null_resource" "deploy_config" {
   triggers = {
-    content_hash = sha256(join("|", [local.nginx_conf_content, local.index_html_content]))
+    content_hash = sha256(local.nginx_conf_content)
   }
 
   provisioner "local-exec" {

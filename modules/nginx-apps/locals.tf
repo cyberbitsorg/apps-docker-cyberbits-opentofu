@@ -42,12 +42,12 @@ locals {
 
   remote_cmd = <<-EOT
     ssh ${var.remote_host} 'mkdir -p ${local.app_dir}/data'
-    printf '%s' '${base64encode(local.index_html_content)}' | ssh ${var.remote_host} 'base64 -d > ${local.app_dir}/data/index.html'
+    printf '%s' '${base64encode(local.index_html_content)}' | ssh ${var.remote_host} 'test -f ${local.app_dir}/data/index.html || base64 -d > ${local.app_dir}/data/index.html'
     ${local.nginx_conf_cmd_remote}
   EOT
   local_cmd  = <<-EOT
     mkdir -p ${local.app_dir}/data
-    printf '%s' '${base64encode(local.index_html_content)}' | base64 -d > ${local.app_dir}/data/index.html
+    test -f ${local.app_dir}/data/index.html || printf '%s' '${base64encode(local.index_html_content)}' | base64 -d > ${local.app_dir}/data/index.html
     ${local.nginx_conf_cmd_local}
   EOT
 }
