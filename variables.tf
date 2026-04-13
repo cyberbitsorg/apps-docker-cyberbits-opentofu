@@ -322,9 +322,9 @@ variable "nextcloud_name_prefix" {
 variable "nextcloud_images" {
   description = "Docker images for the Nextcloud stack. Override individual keys to pin versions."
   type = object({
-    nextcloud = optional(string, "nextcloud:28-apache")
-    db        = optional(string, "postgres:15-alpine")
-    redis     = optional(string, "redis:7-alpine")
+    nextcloud = optional(string, "nextcloud:32-apache")
+    db        = optional(string, "postgres:17-alpine")
+    redis     = optional(string, "redis:8-alpine")
   })
   default = {}
 }
