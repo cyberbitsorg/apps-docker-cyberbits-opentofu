@@ -213,7 +213,7 @@ nextcloud_apps = [
 
 # Nextcloud stack Docker images — override to pin specific versions.
 # nextcloud_images = {
-#   nextcloud = "nextcloud:32-apache"
+#   nextcloud = "nextcloud:33-apache"
 #   db        = "postgres:17-alpine"
 #   redis     = "redis:8-alpine"
 # }
