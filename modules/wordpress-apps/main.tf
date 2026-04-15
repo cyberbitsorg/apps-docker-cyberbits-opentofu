@@ -223,6 +223,11 @@ resource "docker_container" "wordpress" {
     read_only = true
   }
 
+  host {
+    host = "host.docker.internal"
+    ip   = "host-gateway"
+  }
+
   networks_advanced {
     name = docker_network.internal.name
   }

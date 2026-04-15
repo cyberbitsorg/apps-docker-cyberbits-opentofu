@@ -174,6 +174,11 @@ resource "docker_container" "app" {
     type   = local.mount_volume
   }
 
+  host {
+    host = "host.docker.internal"
+    ip   = "host-gateway"
+  }
+
   networks_advanced {
     name = docker_network.internal.name
   }
@@ -260,6 +265,11 @@ resource "docker_container" "cron" {
     target = var.nextcloud_data_path
     source = docker_volume.nextcloud_data.name
     type   = local.mount_volume
+  }
+
+  host {
+    host = "host.docker.internal"
+    ip   = "host-gateway"
   }
 
   networks_advanced {
