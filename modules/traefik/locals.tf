@@ -22,16 +22,17 @@ locals {
     traefik_dashboard_enabled = var.traefik_dashboard_enabled
     traefik_letsencrypt_email = var.traefik_letsencrypt_email
     traefik_network           = var.traefik_network
+    access_log_dir            = var.access_log_dir
   })
   dynamic_yml_content = templatefile("${path.module}/templates/dynamic.yml.tftpl", {})
 
   remote_cmd = <<-EOT
-    ssh ${var.remote_host} 'mkdir -p ${var.traefik_config_dir}/config'
+    ssh ${var.remote_host} 'mkdir -p ${var.traefik_config_dir}/config ${var.access_log_dir}'
     printf '%s' '${base64encode(local.traefik_yml_content)}' | ssh ${var.remote_host} 'base64 -d > ${var.traefik_config_dir}/traefik.yml'
     printf '%s' '${base64encode(local.dynamic_yml_content)}' | ssh ${var.remote_host} 'base64 -d > ${var.traefik_config_dir}/config/dynamic.yml'
   EOT
   local_cmd  = <<-EOT
-    mkdir -p ${var.traefik_config_dir}/config
+    mkdir -p ${var.traefik_config_dir}/config ${var.access_log_dir}
     printf '%s' '${base64encode(local.traefik_yml_content)}' | base64 -d > ${var.traefik_config_dir}/traefik.yml
     printf '%s' '${base64encode(local.dynamic_yml_content)}' | base64 -d > ${var.traefik_config_dir}/config/dynamic.yml
   EOT

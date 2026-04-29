@@ -156,6 +156,12 @@ variable "letsencrypt_target" {
   default     = "/letsencrypt"
 }
 
+variable "access_log_dir" {
+  description = "Host directory where Traefik writes access.log (mounted into the container)"
+  type        = string
+  default     = "/opt/traefik/logs"
+}
+
 variable "healthcheck_test" {
   description = "Healthcheck test command for the Traefik container"
   type        = list(string)

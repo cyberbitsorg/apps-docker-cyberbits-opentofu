@@ -81,6 +81,12 @@ resource "docker_container" "traefik" {
     type   = local.mount_volume
   }
 
+  mounts {
+    target = var.access_log_dir
+    source = var.access_log_dir
+    type   = local.mount_bind
+  }
+
   networks_advanced {
     name = var.traefik_network
   }
