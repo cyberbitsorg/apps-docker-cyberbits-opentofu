@@ -136,20 +136,21 @@ Add to your `terraform.tfvars`:
 ```hcl
 wordpress_apps = [
   {
-    name         = "blog"
-    domain       = "blog.example.com"
-    db_name      = "blog_wp"
-    db_user      = "blog_wp"
-    table_prefix = "wp_"
-    www_redirect = false
+    name   = "blog"
+    domain = "blog.example.com"
+    # db_name and db_user default to "<name>_wp" if omitted
+    # db_name      = "blog_wp"
+    # db_user      = "blog_wp"
+    # table_prefix = "wp_"
+    # www_redirect = false
     # Optional PHP settings:
-    php_memory_limit = "512M"
-    php_upload_max_filesize = "64M"
-    php_post_max_size = "64M"
-    php_max_execution_time = 300
+    # php_memory_limit        = "512M"
+    # php_upload_max_filesize = "64M"
+    # php_post_max_size       = "64M"
+    # php_max_execution_time  = 300
     # Optional Redis settings:
-    redis_maxmemory = "128mb"
-    redis_maxmemory_policy = "allkeys-lru"
+    # redis_maxmemory        = "128mb"
+    # redis_maxmemory_policy = "allkeys-lru"
   }
 ]
 ```
@@ -188,11 +189,11 @@ nextcloud_apps = [
   {
     name       = "cloud"
     domain     = "cloud.example.com"
-    admin_user = "henkbatelaan"
+    admin_user = "yourusername"
     # Optional settings:
-    php_memory_limit = "1024M"
-    max_upload_size = "10G"
-    redis_maxmemory = "256mb"
+    # php_memory_limit = "1024M"
+    # max_upload_size  = "10G"
+    # redis_maxmemory  = "256mb"
   }
 ]
 ```
@@ -204,6 +205,8 @@ Optional settings (with defaults):
 | `php_memory_limit` | 1024M | PHP memory for Nextcloud |
 | `max_upload_size` | 2G | Maximum file upload size |
 | `redis_maxmemory` | 256mb | Redis cache size |
+| `redis_maxmemory_policy` | allkeys-lru | Redis eviction policy |
+| `www_redirect` | false | Route www.domain here too |
 | `app_memory_limit` | 1024 | Nextcloud container memory limit (MiB) |
 | `app_cpu_shares` | 1024 | Nextcloud container CPU shares |
 | `cron_memory_limit` | 256 | Cron container memory limit (MiB) |
