@@ -1,10 +1,10 @@
 # =============================================================================
-# terraform.tfvars.example — User Configuration Reference
+# terraform.tfvars.example -> user configuration reference
 # =============================================================================
 #
 # Copy this file to terraform.tfvars and fill in the required values.
 # Lines starting with # are comments. Commented-out variables show their
-# default values — uncomment and change only what you need to override.
+# default values; uncomment and change only what you need to override.
 #
 # HOW TO ADD A NEW SITE
 #   Append a new object to the relevant list below and run:
@@ -58,7 +58,7 @@ base_app_dir = "/opt"
 # TRAEFIK GATEWAY
 # =============================================================================
 
-# Traefik Docker image tag — update here to upgrade.
+# Traefik Docker image tag, update here to upgrade.
 traefik_version = "v3.6"
 
 # Internal Docker network name shared between Traefik and all app containers.
@@ -73,7 +73,7 @@ traefik_version = "v3.6"
 # Docker volume name for Let's Encrypt certificate storage.
 # traefik_ssl_volume_name = "gw-traefik-ssl"
 
-# Enable the Traefik dashboard — disable in production.
+# Enable the Traefik dashboard, disable in production.
 # traefik_dashboard_enabled = false
 
 # =============================================================================
@@ -98,12 +98,12 @@ traefik_version = "v3.6"
 #
 # REQUIRED per site : name, domain
 # OPTIONAL per site :
-#   title             — page <title> (defaults to domain)
-#   message           — body text on the default page
-#   www_redirect      — route www.domain here too  (default: false)
-#   custom_nginx_conf — use /opt/nginx-apps/<name>/nginx.conf  (default: false)
-#   memory_limit      — container memory limit in MiB            (default: 64)
-#   cpu_shares        — container CPU shares                      (default: 512)
+#   title             - page <title> (defaults to domain)
+#   message           - body text on the default page
+#   www_redirect      - route www.domain here too  (default: false)
+#   custom_nginx_conf - use /opt/nginx-apps/<name>/nginx.conf  (default: false)
+#   memory_limit      - container memory limit in MiB            (default: 64)
+#   cpu_shares        - container CPU shares                      (default: 512)
 
 nginx_apps = [
   {
@@ -141,16 +141,16 @@ nginx_apps = [
 #   php_max_execution_time  (default: 300)
 #   redis_maxmemory         (default: "128mb")
 #   redis_maxmemory_policy  (default: "allkeys-lru")
-#   app_memory_limit        (default: 512)   — PHP-FPM container, MiB
-#   app_cpu_shares          (default: 1024)  — PHP-FPM container CPU shares
-#   nginx_memory_limit      (default: 128)   — Nginx sidecar, MiB
-#   nginx_cpu_shares        (default: 256)   — Nginx sidecar CPU shares
-#   db_memory_limit         (default: 512)   — MariaDB container, MiB
-#   db_cpu_shares           (default: 512)   — MariaDB container CPU shares
-#   redis_memory_limit      (default: 256)   — Redis container, MiB
-#   redis_cpu_shares        (default: 256)   — Redis container CPU shares
-#   wpcli_memory_limit      (default: 128)   — WP-CLI sidecar, MiB
-#   wpcli_cpu_shares        (default: 256)   — WP-CLI sidecar CPU shares
+#   app_memory_limit        (default: 512)   - PHP-FPM container, MiB
+#   app_cpu_shares          (default: 1024)  - PHP-FPM container CPU shares
+#   nginx_memory_limit      (default: 128)   - Nginx sidecar, MiB
+#   nginx_cpu_shares        (default: 256)   - Nginx sidecar CPU shares
+#   db_memory_limit         (default: 512)   - MariaDB container, MiB
+#   db_cpu_shares           (default: 512)   - MariaDB container CPU shares
+#   redis_memory_limit      (default: 256)   - Redis container, MiB
+#   redis_cpu_shares        (default: 256)   - Redis container CPU shares
+#   wpcli_memory_limit      (default: 128)   - WP-CLI sidecar, MiB
+#   wpcli_cpu_shares        (default: 256)   - WP-CLI sidecar CPU shares
 
 wordpress_apps = [
   {
@@ -165,7 +165,7 @@ wordpress_apps = [
   },
 ]
 
-# WordPress stack Docker images — override to pin specific versions.
+# WordPress stack Docker images, override to pin specific versions.
 # wordpress_images = {
 #   wordpress = "wordpress:6-fpm-alpine"
 #   db        = "mariadb:11"
@@ -190,14 +190,14 @@ wordpress_apps = [
 #   max_upload_size        (default: "2G")
 #   redis_maxmemory        (default: "256mb")
 #   redis_maxmemory_policy (default: "allkeys-lru")
-#   app_memory_limit       (default: 1024)  — Nextcloud container, MiB
-#   app_cpu_shares         (default: 1024)  — Nextcloud container CPU shares
-#   cron_memory_limit      (default: 256)   — Cron container, MiB
-#   cron_cpu_shares        (default: 256)   — Cron container CPU shares
-#   db_memory_limit        (default: 512)   — PostgreSQL container, MiB
-#   db_cpu_shares          (default: 512)   — PostgreSQL container CPU shares
-#   redis_memory_limit     (default: 512)   — Redis container, MiB
-#   redis_cpu_shares       (default: 256)   — Redis container CPU shares
+#   app_memory_limit       (default: 1024)  - Nextcloud container, MiB
+#   app_cpu_shares         (default: 1024)  - Nextcloud container CPU shares
+#   cron_memory_limit      (default: 256)   - Cron container, MiB
+#   cron_cpu_shares        (default: 256)   - Cron container CPU shares
+#   db_memory_limit        (default: 512)   - PostgreSQL container, MiB
+#   db_cpu_shares          (default: 512)   - PostgreSQL container CPU shares
+#   redis_memory_limit     (default: 512)   - Redis container, MiB
+#   redis_cpu_shares       (default: 256)   - Redis container CPU shares
 
 nextcloud_apps = [
   {
@@ -211,7 +211,7 @@ nextcloud_apps = [
   },
 ]
 
-# Nextcloud stack Docker images — override to pin specific versions.
+# Nextcloud stack Docker images, override to pin specific versions.
 # nextcloud_images = {
 #   nextcloud = "nextcloud:33-apache"
 #   db        = "postgres:17-alpine"
@@ -221,5 +221,5 @@ nextcloud_apps = [
 # Prefix for Nextcloud container, volume, and network names.
 # nextcloud_name_prefix = "nc"
 
-# CIDR of your reverse proxy (Traefik) Docker network — passed as TRUSTED_PROXIES.
+# CIDR of your reverse proxy (Traefik) Docker network, passed as TRUSTED_PROXIES.
 # nextcloud_trusted_proxies = "172.16.0.0/12"

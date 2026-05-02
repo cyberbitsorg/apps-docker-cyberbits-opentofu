@@ -232,10 +232,6 @@ resource "docker_container" "wordpress" {
     name = docker_network.internal.name
   }
 
-  networks_advanced {
-    name = var.traefik_network
-  }
-
   healthcheck {
     test         = var.app_healthcheck_test
     interval     = var.healthcheck_interval

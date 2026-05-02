@@ -41,6 +41,8 @@ For production, use remote state with encryption (e.g., S3 with server-side encr
 
 Just add a new entry to the relevant list in `terraform.tfvars` and run `tofu apply`. New passwords are generated automatically.
 
+See below for more details.
+
 ## Quick Start
 
 ### 1. Install OpenTofu
