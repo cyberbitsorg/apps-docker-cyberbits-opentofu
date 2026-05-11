@@ -47,7 +47,7 @@ locals {
   redis_config_defines = "define('WP_REDIS_HOST', '${var.redis_host}'); define('WP_REDIS_PORT', ${var.redis_port}); define('WP_REDIS_DATABASE', ${var.redis_db}); define('WP_REDIS_PASSWORD', '${local.redis_password}'); define('WP_CACHE', ${var.wp_cache});"
 
   # WordPress config extras
-  wordpress_config_extra = "define('DISALLOW_FILE_EDIT', ${var.wp_disallow_file_edit}); define('FORCE_SSL_ADMIN', ${var.wp_force_ssl_admin}); define('WP_AUTO_UPDATE_CORE', '${var.wp_auto_update_core}'); define('WP_MEMORY_LIMIT', '${var.php_memory_limit}'); ${local.redis_config_defines}"
+  wordpress_config_extra = "define('DISALLOW_FILE_EDIT', ${var.wp_disallow_file_edit}); define('FORCE_SSL_ADMIN', ${var.wp_force_ssl_admin}); define('WP_AUTO_UPDATE_CORE', '${var.wp_auto_update_core}'); define('WP_MEMORY_LIMIT', '${var.php_memory_limit}'); define('DISABLE_WP_CRON', true); ${local.redis_config_defines}"
   wpcli_config_extra     = local.redis_config_defines
 
   # Environment variable arrays
@@ -124,16 +124,20 @@ locals {
     php_memory_limit        = var.php_memory_limit
   })
 
+  cron_job = "*/5 * * * * docker exec ${local.wpcli_container_name} wp cron event run --due-now --path=${var.wordpress_data_path} --allow-root >> /tmp/${local.wpcli_container_name}.log 2>&1"
+
   remote_cmd = <<-EOT
     ssh ${var.remote_host} 'mkdir -p ${local.app_dir}/nginx'
     printf '%s' '${base64encode(local.env_content)}' | ssh ${var.remote_host} 'base64 -d > ${local.app_dir}/.env && chmod 600 ${local.app_dir}/.env'
     printf '%s' '${base64encode(local.nginx_conf_content)}' | ssh ${var.remote_host} 'base64 -d > ${local.app_dir}/nginx/wordpress.conf'
     printf '%s' '${base64encode(local.php_ini_content)}' | ssh ${var.remote_host} 'base64 -d > ${local.app_dir}/php-uploads.ini'
+    ssh ${var.remote_host} '(crontab -l 2>/dev/null | grep -v "${local.wpcli_container_name}"; echo "${local.cron_job}") | crontab -'
   EOT
   local_cmd  = <<-EOT
     mkdir -p ${local.app_dir}/nginx
     printf '%s' '${base64encode(local.env_content)}' | base64 -d > ${local.app_dir}/.env && chmod 600 ${local.app_dir}/.env
     printf '%s' '${base64encode(local.nginx_conf_content)}' | base64 -d > ${local.app_dir}/nginx/wordpress.conf
     printf '%s' '${base64encode(local.php_ini_content)}' | base64 -d > ${local.app_dir}/php-uploads.ini
+    (crontab -l 2>/dev/null | grep -v "${local.wpcli_container_name}"; echo "${local.cron_job}") | crontab -
   EOT
 }

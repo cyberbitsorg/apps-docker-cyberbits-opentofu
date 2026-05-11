@@ -228,8 +228,17 @@ resource "docker_container" "wordpress" {
     ip   = "host-gateway"
   }
 
+  host {
+    host = var.domain
+    ip   = "host-gateway"
+  }
+
   networks_advanced {
     name = docker_network.internal.name
+  }
+
+  networks_advanced {
+    name = var.traefik_network
   }
 
   healthcheck {
@@ -369,8 +378,17 @@ resource "docker_container" "wpcli" {
     type   = local.mount_volume
   }
 
+  host {
+    host = var.domain
+    ip   = "host-gateway"
+  }
+
   networks_advanced {
     name = docker_network.internal.name
+  }
+
+  networks_advanced {
+    name = var.traefik_network
   }
 
   entrypoint = var.wpcli_entrypoint
