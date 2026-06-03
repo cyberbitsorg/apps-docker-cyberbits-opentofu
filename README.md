@@ -365,4 +365,4 @@ docker run --rm -v nc-firstnc-nextcloud-data:/data -v $(pwd):/backup alpine tar 
 
 ## License
 
-MIT License. Free to use. No warranties.
+GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
