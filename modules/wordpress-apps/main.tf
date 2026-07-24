@@ -379,6 +379,11 @@ resource "docker_container" "wpcli" {
   }
 
   host {
+    host = "host.docker.internal"
+    ip   = "host-gateway"
+  }
+
+  host {
     host = var.domain
     ip   = "host-gateway"
   }
