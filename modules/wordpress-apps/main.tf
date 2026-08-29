@@ -371,10 +371,6 @@ resource "docker_container" "wpcli" {
     name = docker_network.internal.name
   }
 
-  networks_advanced {
-    name = var.traefik_network
-  }
-
   entrypoint = var.wpcli_entrypoint
 
   healthcheck {
