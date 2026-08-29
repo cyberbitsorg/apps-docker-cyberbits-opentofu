@@ -36,8 +36,11 @@ locals {
     "--max-connections=${var.db_max_connections}"
   ]
 
-  redis_command          = ["redis-server", "--maxmemory", var.redis_maxmemory, "--maxmemory-policy", var.redis_maxmemory_policy, "--requirepass", local.redis_password]
-  redis_healthcheck_test = ["CMD", "redis-cli", "-a", local.redis_password, "ping"]
+  redis_command = [
+    "sh", "-c",
+    "exec redis-server --maxmemory ${var.redis_maxmemory} --maxmemory-policy ${var.redis_maxmemory_policy} --requirepass \"$REDIS_PASSWORD\""
+  ]
+  redis_healthcheck_test = ["CMD-SHELL", "redis-cli -a \"$REDIS_PASSWORD\" ping"]
 
   # Computed bind mount source paths
   php_ini_source    = "${local.app_dir}/php-uploads.ini"
@@ -66,14 +69,14 @@ locals {
     "WORDPRESS_TABLE_PREFIX=${var.table_prefix}",
     "PHP_UPLOAD_MAX_FILESIZE=${var.php_upload_max_filesize}",
     "PHP_POST_MAX_SIZE=${var.php_post_max_size}",
-    "WORDPRESS_AUTH_KEY=${random_password.wp_auth_key.result}",
-    "WORDPRESS_SECURE_AUTH_KEY=${random_password.wp_secure_auth_key.result}",
-    "WORDPRESS_LOGGED_IN_KEY=${random_password.wp_logged_in_key.result}",
-    "WORDPRESS_NONCE_KEY=${random_password.wp_nonce_key.result}",
-    "WORDPRESS_AUTH_SALT=${random_password.wp_auth_salt.result}",
-    "WORDPRESS_SECURE_AUTH_SALT=${random_password.wp_secure_auth_salt.result}",
-    "WORDPRESS_LOGGED_IN_SALT=${random_password.wp_logged_in_salt.result}",
-    "WORDPRESS_NONCE_SALT=${random_password.wp_nonce_salt.result}",
+    "WORDPRESS_AUTH_KEY=${random_password.wp_keys["auth_key"].result}",
+    "WORDPRESS_SECURE_AUTH_KEY=${random_password.wp_keys["secure_auth_key"].result}",
+    "WORDPRESS_LOGGED_IN_KEY=${random_password.wp_keys["logged_in_key"].result}",
+    "WORDPRESS_NONCE_KEY=${random_password.wp_keys["nonce_key"].result}",
+    "WORDPRESS_AUTH_SALT=${random_password.wp_keys["auth_salt"].result}",
+    "WORDPRESS_SECURE_AUTH_SALT=${random_password.wp_keys["secure_auth_salt"].result}",
+    "WORDPRESS_LOGGED_IN_SALT=${random_password.wp_keys["logged_in_salt"].result}",
+    "WORDPRESS_NONCE_SALT=${random_password.wp_keys["nonce_salt"].result}",
     "WORDPRESS_CONFIG_EXTRA=${local.wordpress_config_extra}"
   ]
 
@@ -89,14 +92,16 @@ locals {
   # Traefik routing rule
   traefik_host_rule = var.www_redirect ? "Host(`${var.domain}`) || Host(`www.${var.domain}`)" : "Host(`${var.domain}`)"
 
-  # Traefik label keys
-  traefik_enable_label       = "traefik.enable"
-  traefik_rule_label         = "traefik.http.routers.${local.router_name}.rule"
-  traefik_entrypoints_label  = "traefik.http.routers.${local.router_name}.entrypoints"
-  traefik_tls_label          = "traefik.http.routers.${local.router_name}.tls"
-  traefik_certresolver_label = "traefik.http.routers.${local.router_name}.tls.certresolver"
-  traefik_middlewares_label  = "traefik.http.routers.${local.router_name}.middlewares"
-  traefik_lb_port_label      = "traefik.http.services.${local.router_name}.loadbalancer.server.port"
+  # Traefik routing labels
+  traefik_labels = {
+    "traefik.enable"                                                       = var.traefik_enabled
+    "traefik.http.routers.${local.router_name}.rule"                       = local.traefik_host_rule
+    "traefik.http.routers.${local.router_name}.entrypoints"                = var.traefik_entrypoint
+    "traefik.http.routers.${local.router_name}.tls"                        = var.traefik_tls
+    "traefik.http.routers.${local.router_name}.tls.certresolver"           = var.traefik_cert_resolver
+    "traefik.http.routers.${local.router_name}.middlewares"                = var.traefik_middlewares
+    "traefik.http.services.${local.router_name}.loadbalancer.server.port"  = tostring(var.container_port)
+  }
 
   env_content = templatefile("${path.module}/templates/wordpress.env.tftpl", {
     db_root_password    = random_password.db_root_password.result
@@ -104,14 +109,14 @@ locals {
     db_user             = var.db_user
     db_password         = random_password.db_password.result
     table_prefix        = var.table_prefix
-    wp_auth_key         = random_password.wp_auth_key.result
-    wp_secure_auth_key  = random_password.wp_secure_auth_key.result
-    wp_logged_in_key    = random_password.wp_logged_in_key.result
-    wp_nonce_key        = random_password.wp_nonce_key.result
-    wp_auth_salt        = random_password.wp_auth_salt.result
-    wp_secure_auth_salt = random_password.wp_secure_auth_salt.result
-    wp_logged_in_salt   = random_password.wp_logged_in_salt.result
-    wp_nonce_salt       = random_password.wp_nonce_salt.result
+    wp_auth_key         = random_password.wp_keys["auth_key"].result
+    wp_secure_auth_key  = random_password.wp_keys["secure_auth_key"].result
+    wp_logged_in_key    = random_password.wp_keys["logged_in_key"].result
+    wp_nonce_key        = random_password.wp_keys["nonce_key"].result
+    wp_auth_salt        = random_password.wp_keys["auth_salt"].result
+    wp_secure_auth_salt = random_password.wp_keys["secure_auth_salt"].result
+    wp_logged_in_salt   = random_password.wp_keys["logged_in_salt"].result
+    wp_nonce_salt       = random_password.wp_keys["nonce_salt"].result
   })
   nginx_conf_content = templatefile("${path.module}/templates/wordpress-nginx.conf.tftpl", {
     app_hostname            = local.router_name

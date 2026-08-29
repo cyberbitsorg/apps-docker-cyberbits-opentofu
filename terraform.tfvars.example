@@ -59,7 +59,7 @@ base_app_dir = "/opt"
 # =============================================================================
 
 # Traefik Docker image tag, update here to upgrade.
-traefik_version = "v3.7.1"
+traefik_version = "v3.7.12"
 
 # Internal Docker network name shared between Traefik and all app containers.
 # traefik_network = "traefik"
@@ -119,7 +119,7 @@ nginx_apps = [
 ]
 
 # Docker image used for all Nginx static sites.
-# nginx_image = "nginx:1.30.2-alpine"
+# nginx_image = "nginx:1.30.4-alpine"
 
 # Prefix for Nginx container and volume names (e.g. nx → nx-mysite).
 # nginx_name_prefix = "nx"
@@ -167,10 +167,10 @@ wordpress_apps = [
 
 # WordPress stack Docker images, override to pin specific versions.
 # wordpress_images = {
-#   wordpress = "wordpress:7.0.0-php8.4-fpm-alpine"
-#   db        = "mariadb:11.8.8"
-#   redis     = "redis:7.4.9-alpine"
-#   nginx     = "nginx:1.30.2-alpine"
+#   wordpress = "wordpress:7.0.4-php8.4-fpm-alpine"
+#   db        = "mariadb:11.8.9"
+#   redis     = "redis:7.4.11-alpine"
+#   nginx     = "nginx:1.30.4-alpine"
 #   cli       = "wordpress:cli-2.12.0-php8.4"
 # }
 
@@ -213,9 +213,9 @@ nextcloud_apps = [
 
 # Nextcloud stack Docker images, override to pin specific versions.
 # nextcloud_images = {
-#   nextcloud = "nextcloud:33.0.4-apache"
-#   db        = "postgres:17.10-alpine"
-#   redis     = "redis:8.8.0-alpine"
+#   nextcloud = "nextcloud:34.0.3-apache"
+#   db        = "postgres:17.11-alpine"
+#   redis     = "redis:8.8.2-alpine"
 # }
 
 # Prefix for Nextcloud container, volume, and network names.

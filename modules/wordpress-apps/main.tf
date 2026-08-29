@@ -16,49 +16,53 @@ resource "random_password" "db_root_password" {
   special = false
 }
 
-resource "random_password" "wp_auth_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_secure_auth_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_logged_in_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_nonce_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_auth_salt" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_secure_auth_salt" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_logged_in_salt" {
-  length  = 32
-  special = false
-}
-
-resource "random_password" "wp_nonce_salt" {
-  length  = 32
-  special = false
-}
-
 resource "random_password" "redis_password" {
   length  = 32
   special = false
+}
+
+resource "random_password" "wp_keys" {
+  for_each = toset([
+    "auth_key", "secure_auth_key", "logged_in_key", "nonce_key",
+    "auth_salt", "secure_auth_salt", "logged_in_salt", "nonce_salt",
+  ])
+  length  = 32
+  special = false
+}
+
+# Preserve the values generated before wp_keys was consolidated into one
+# for_each resource, so logins and nonces survive the refactor.
+moved {
+  from = random_password.wp_auth_key
+  to   = random_password.wp_keys["auth_key"]
+}
+moved {
+  from = random_password.wp_secure_auth_key
+  to   = random_password.wp_keys["secure_auth_key"]
+}
+moved {
+  from = random_password.wp_logged_in_key
+  to   = random_password.wp_keys["logged_in_key"]
+}
+moved {
+  from = random_password.wp_nonce_key
+  to   = random_password.wp_keys["nonce_key"]
+}
+moved {
+  from = random_password.wp_auth_salt
+  to   = random_password.wp_keys["auth_salt"]
+}
+moved {
+  from = random_password.wp_secure_auth_salt
+  to   = random_password.wp_keys["secure_auth_salt"]
+}
+moved {
+  from = random_password.wp_logged_in_salt
+  to   = random_password.wp_keys["logged_in_salt"]
+}
+moved {
+  from = random_password.wp_nonce_salt
+  to   = random_password.wp_keys["nonce_salt"]
 }
 
 # =============================================================================
@@ -164,6 +168,8 @@ resource "docker_container" "redis" {
   security_opts = var.security_opts
 
   command = local.redis_command
+
+  env = ["REDIS_PASSWORD=${local.redis_password}"]
 
   mounts {
     target = var.redis_data_path
@@ -308,39 +314,12 @@ resource "docker_container" "nginx" {
     start_period = var.healthcheck_start_period
   }
 
-  labels {
-    label = local.traefik_enable_label
-    value = var.traefik_enabled
-  }
-
-  labels {
-    label = local.traefik_rule_label
-    value = local.traefik_host_rule
-  }
-
-  labels {
-    label = local.traefik_entrypoints_label
-    value = var.traefik_entrypoint
-  }
-
-  labels {
-    label = local.traefik_tls_label
-    value = var.traefik_tls
-  }
-
-  labels {
-    label = local.traefik_certresolver_label
-    value = var.traefik_cert_resolver
-  }
-
-  labels {
-    label = local.traefik_middlewares_label
-    value = var.traefik_middlewares
-  }
-
-  labels {
-    label = local.traefik_lb_port_label
-    value = tostring(var.container_port)
+  dynamic "labels" {
+    for_each = local.traefik_labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
 
   lifecycle {

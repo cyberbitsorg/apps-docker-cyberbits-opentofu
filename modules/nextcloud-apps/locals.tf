@@ -26,8 +26,11 @@ locals {
   network_driver = "bridge"
 
   # Container commands
-  redis_command          = ["redis-server", "--maxmemory", var.redis_maxmemory, "--maxmemory-policy", var.redis_maxmemory_policy, "--requirepass", local.redis_password]
-  redis_healthcheck_test = ["CMD", "redis-cli", "-a", local.redis_password, "ping"]
+  redis_command = [
+    "sh", "-c",
+    "exec redis-server --maxmemory ${var.redis_maxmemory} --maxmemory-policy ${var.redis_maxmemory_policy} --requirepass \"$REDIS_PASSWORD\""
+  ]
+  redis_healthcheck_test = ["CMD-SHELL", "redis-cli -a \"$REDIS_PASSWORD\" ping"]
 
   # Healthcheck commands
   db_healthcheck_test = ["CMD-SHELL", "pg_isready -U ${var.db_user}"]
@@ -67,14 +70,16 @@ locals {
   # Traefik routing rule
   traefik_host_rule = var.www_redirect ? "Host(`${var.domain}`) || Host(`www.${var.domain}`)" : "Host(`${var.domain}`)"
 
-  # Traefik label keys
-  traefik_enable_label       = "traefik.enable"
-  traefik_rule_label         = "traefik.http.routers.${local.router_name}.rule"
-  traefik_entrypoints_label  = "traefik.http.routers.${local.router_name}.entrypoints"
-  traefik_tls_label          = "traefik.http.routers.${local.router_name}.tls"
-  traefik_certresolver_label = "traefik.http.routers.${local.router_name}.tls.certresolver"
-  traefik_middlewares_label  = "traefik.http.routers.${local.router_name}.middlewares"
-  traefik_lb_port_label      = "traefik.http.services.${local.router_name}.loadbalancer.server.port"
+  # Traefik labels
+  traefik_labels = {
+    "traefik.enable"                                                       = var.traefik_enabled
+    "traefik.http.routers.${local.router_name}.rule"                       = local.traefik_host_rule
+    "traefik.http.routers.${local.router_name}.entrypoints"                = var.traefik_entrypoint
+    "traefik.http.routers.${local.router_name}.tls"                        = var.traefik_tls
+    "traefik.http.routers.${local.router_name}.tls.certresolver"           = var.traefik_cert_resolver
+    "traefik.http.routers.${local.router_name}.middlewares"                = var.traefik_middlewares
+    "traefik.http.services.${local.router_name}.loadbalancer.server.port"  = tostring(var.container_port)
+  }
 
   env_content = templatefile("${path.module}/templates/nextcloud.env.tftpl", {
     db_password    = random_password.db_password.result

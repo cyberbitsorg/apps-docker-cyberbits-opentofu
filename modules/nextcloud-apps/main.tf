@@ -123,6 +123,8 @@ resource "docker_container" "redis" {
 
   command = local.redis_command
 
+  env = ["REDIS_PASSWORD=${local.redis_password}"]
+
   mounts {
     target = var.redis_data_path
     source = docker_volume.redis_data.name
@@ -195,39 +197,12 @@ resource "docker_container" "app" {
     start_period = var.app_healthcheck_start_period
   }
 
-  labels {
-    label = local.traefik_enable_label
-    value = var.traefik_enabled
-  }
-
-  labels {
-    label = local.traefik_rule_label
-    value = local.traefik_host_rule
-  }
-
-  labels {
-    label = local.traefik_entrypoints_label
-    value = var.traefik_entrypoint
-  }
-
-  labels {
-    label = local.traefik_tls_label
-    value = var.traefik_tls
-  }
-
-  labels {
-    label = local.traefik_certresolver_label
-    value = var.traefik_cert_resolver
-  }
-
-  labels {
-    label = local.traefik_middlewares_label
-    value = var.traefik_middlewares
-  }
-
-  labels {
-    label = local.traefik_lb_port_label
-    value = tostring(var.container_port)
+  dynamic "labels" {
+    for_each = local.traefik_labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
 
   lifecycle {

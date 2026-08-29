@@ -77,39 +77,12 @@ resource "docker_container" "nginx" {
     start_period = var.healthcheck_start_period
   }
 
-  labels {
-    label = local.traefik_enable_label
-    value = var.traefik_enabled
-  }
-
-  labels {
-    label = local.traefik_rule_label
-    value = local.traefik_host_rule
-  }
-
-  labels {
-    label = local.traefik_entrypoints_label
-    value = var.traefik_entrypoint
-  }
-
-  labels {
-    label = local.traefik_tls_label
-    value = var.traefik_tls
-  }
-
-  labels {
-    label = local.traefik_certresolver_label
-    value = var.traefik_cert_resolver
-  }
-
-  labels {
-    label = local.traefik_middlewares_label
-    value = var.traefik_middlewares
-  }
-
-  labels {
-    label = local.traefik_lb_port_label
-    value = tostring(var.container_port)
+  dynamic "labels" {
+    for_each = local.traefik_labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
 
   lifecycle {

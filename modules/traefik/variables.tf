@@ -31,7 +31,7 @@ variable "traefik_letsencrypt_email" {
 variable "traefik_version" {
   description = "Traefik Docker image tag"
   type        = string
-  default     = "v3.6"
+  default     = "v3.7.12"
 }
 
 variable "traefik_config_dir" {
