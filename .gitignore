@@ -29,9 +29,8 @@ opentofu.rc
 .terraformrc
 terraform.rc
 
-# Ignore lock files (optional - you might want to commit these)
+# The lock file IS committed (reproducible provider versions / supply-chain pinning)
 # .opentofu.lock.hcl
-**/.terraform.lock.hcl
 
 # Plan files
 *.tfplan
