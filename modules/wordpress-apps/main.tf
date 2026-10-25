@@ -30,41 +30,6 @@ resource "random_password" "wp_keys" {
   special = false
 }
 
-# Preserve the values generated before wp_keys was consolidated into one
-# for_each resource, so logins and nonces survive the refactor.
-moved {
-  from = random_password.wp_auth_key
-  to   = random_password.wp_keys["auth_key"]
-}
-moved {
-  from = random_password.wp_secure_auth_key
-  to   = random_password.wp_keys["secure_auth_key"]
-}
-moved {
-  from = random_password.wp_logged_in_key
-  to   = random_password.wp_keys["logged_in_key"]
-}
-moved {
-  from = random_password.wp_nonce_key
-  to   = random_password.wp_keys["nonce_key"]
-}
-moved {
-  from = random_password.wp_auth_salt
-  to   = random_password.wp_keys["auth_salt"]
-}
-moved {
-  from = random_password.wp_secure_auth_salt
-  to   = random_password.wp_keys["secure_auth_salt"]
-}
-moved {
-  from = random_password.wp_logged_in_salt
-  to   = random_password.wp_keys["logged_in_salt"]
-}
-moved {
-  from = random_password.wp_nonce_salt
-  to   = random_password.wp_keys["nonce_salt"]
-}
-
 # =============================================================================
 # Configuration files
 # =============================================================================

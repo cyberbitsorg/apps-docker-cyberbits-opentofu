@@ -20,19 +20,18 @@ variable "traefik_network" {
 }
 
 variable "traefik_letsencrypt_email" {
-  description = "Email address for Let's Encrypt certificate notifications"
+  description = "Email address for Let's Encrypt certificates"
+  type        = string
+}
+
+variable "traefik_version" {
+  description = "Traefik Docker image tag"
   type        = string
 }
 
 # =============================================================================
 # CONFIG
 # =============================================================================
-
-variable "traefik_version" {
-  description = "Traefik Docker image tag"
-  type        = string
-  default     = "v3.7.12"
-}
 
 variable "traefik_config_dir" {
   description = "Directory on the host holding traefik.yml and config/ subdirectory"
