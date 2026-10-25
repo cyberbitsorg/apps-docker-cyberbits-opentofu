@@ -78,7 +78,7 @@ variable "traefik_network" {
 variable "traefik_version" {
   description = "Traefik Docker image tag"
   type        = string
-  default     = "v3.7.12"
+  default     = "v3.7.16"
 }
 
 variable "traefik_config_dir" {
@@ -174,7 +174,7 @@ variable "nginx_name_prefix" {
 variable "nginx_image" {
   description = "Nginx Docker image used for static sites"
   type        = string
-  default     = "nginx:1.30.4-alpine"
+  default     = "nginx:1.30.6-alpine"
 }
 
 variable "nginx_apps" {
@@ -222,10 +222,10 @@ variable "wordpress_name_prefix" {
 variable "wordpress_images" {
   description = "Docker images for the WordPress stack. Override individual keys to pin versions."
   type = object({
-    wordpress = optional(string, "wordpress:7.0.4-php8.4-fpm-alpine")
+    wordpress = optional(string, "wordpress:7.1.3-php8.4-fpm-alpine")
     db        = optional(string, "mariadb:11.8.9")
     redis     = optional(string, "redis:7.4.11-alpine")
-    nginx     = optional(string, "nginx:1.30.4-alpine")
+    nginx     = optional(string, "nginx:1.30.6-alpine")
     cli       = optional(string, "wordpress:cli-2.12.0-php8.4")
   })
   default = {}
@@ -322,9 +322,9 @@ variable "nextcloud_name_prefix" {
 variable "nextcloud_images" {
   description = "Docker images for the Nextcloud stack. Override individual keys to pin versions."
   type = object({
-    nextcloud = optional(string, "nextcloud:34.0.3-apache")
+    nextcloud = optional(string, "nextcloud:34.0.5-apache")
     db        = optional(string, "postgres:17.11-alpine")
-    redis     = optional(string, "redis:8.8.2-alpine")
+    redis     = optional(string, "redis:8.10.2-alpine")
   })
   default = {}
 }
