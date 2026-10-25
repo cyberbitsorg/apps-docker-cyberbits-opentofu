@@ -94,13 +94,13 @@ locals {
 
   # Traefik routing labels
   traefik_labels = {
-    "traefik.enable"                                                       = var.traefik_enabled
-    "traefik.http.routers.${local.router_name}.rule"                       = local.traefik_host_rule
-    "traefik.http.routers.${local.router_name}.entrypoints"                = var.traefik_entrypoint
-    "traefik.http.routers.${local.router_name}.tls"                        = var.traefik_tls
-    "traefik.http.routers.${local.router_name}.tls.certresolver"           = var.traefik_cert_resolver
-    "traefik.http.routers.${local.router_name}.middlewares"                = var.traefik_middlewares
-    "traefik.http.services.${local.router_name}.loadbalancer.server.port"  = tostring(var.container_port)
+    "traefik.enable"                                                      = var.traefik_enabled
+    "traefik.http.routers.${local.router_name}.rule"                      = local.traefik_host_rule
+    "traefik.http.routers.${local.router_name}.entrypoints"               = var.traefik_entrypoint
+    "traefik.http.routers.${local.router_name}.tls"                       = var.traefik_tls
+    "traefik.http.routers.${local.router_name}.tls.certresolver"          = var.traefik_cert_resolver
+    "traefik.http.routers.${local.router_name}.middlewares"               = var.traefik_middlewares
+    "traefik.http.services.${local.router_name}.loadbalancer.server.port" = tostring(var.container_port)
   }
 
   env_content = templatefile("${path.module}/templates/wordpress.env.tftpl", {
