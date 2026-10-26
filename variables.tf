@@ -223,8 +223,8 @@ variable "wordpress_images" {
   description = "Docker images for the WordPress stack. Override individual keys to pin versions."
   type = object({
     wordpress = optional(string, "wordpress:7.1.3-php8.4-fpm-alpine")
-    db        = optional(string, "mariadb:11.8.9")
-    redis     = optional(string, "redis:7.4.11-alpine")
+    db        = optional(string, "mariadb:12.3.3")
+    redis     = optional(string, "redis:8.10.2-alpine")
     nginx     = optional(string, "nginx:1.30.6-alpine")
     cli       = optional(string, "wordpress:cli-2.12.0-php8.4")
   })
@@ -322,8 +322,8 @@ variable "nextcloud_name_prefix" {
 variable "nextcloud_images" {
   description = "Docker images for the Nextcloud stack. Override individual keys to pin versions."
   type = object({
-    nextcloud = optional(string, "nextcloud:34.0.5-apache")
-    db        = optional(string, "postgres:17.11-alpine")
+    nextcloud = optional(string, "nextcloud:35.0.2-apache")
+    db        = optional(string, "postgres:18.6-alpine")
     redis     = optional(string, "redis:8.10.2-alpine")
   })
   default = {}

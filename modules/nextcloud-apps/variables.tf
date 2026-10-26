@@ -270,9 +270,9 @@ variable "container_port" {
 # =============================================================================
 
 variable "db_data_path" {
-  description = "PostgreSQL data directory inside the container"
+  description = "PostgreSQL data directory inside the container. Must be /var/lib/postgresql for PostgreSQL 18+ images (they store data in a major-version subdirectory below this mount and refuse the legacy /var/lib/postgresql/data mount)."
   type        = string
-  default     = "/var/lib/postgresql/data"
+  default     = "/var/lib/postgresql"
 }
 
 variable "redis_data_path" {
